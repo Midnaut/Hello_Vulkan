@@ -1,13 +1,13 @@
 #include "Applications.h"
 #include <iostream>
+#include <map>
 
-
-VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, 
-	const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, 
-	const VkAllocationCallbacks* pAllocator, 
+VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
+	const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+	const VkAllocationCallbacks* pAllocator,
 	VkDebugUtilsMessengerEXT* pDebugMessenger) {
 
-	auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(
+	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
 		instance,
 		"vkCreateDebugUtilsMessengerEXT");
 
@@ -19,8 +19,8 @@ VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
 	}
 }
 
-void DestroyDebugUtilsMessengerEXT(VkInstance instance, 
-	VkDebugUtilsMessengerEXT debugMessenger, 
+void DestroyDebugUtilsMessengerEXT(VkInstance instance,
+	VkDebugUtilsMessengerEXT debugMessenger,
 	const VkAllocationCallbacks* pAllocator) {
 
 	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
@@ -30,6 +30,55 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance,
 	if (func != nullptr) {
 		func(instance, debugMessenger, pAllocator);
 	}
+}
+
+void HelloTriangleApplication::pickPhysicalDevice() {
+
+	uint32_t deviceCount = 0;
+	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+
+	if (deviceCount == 0) {
+		throw std::runtime_error("Failed to find any GPU with Vulkan Support!");
+	}
+
+	std::vector<VkPhysicalDevice> devices(deviceCount);
+	vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+
+	std::multimap<int, VkPhysicalDevice> candidates;
+
+	for (const auto& device : devices) {
+		int score = rateDeviceSuitability(device);
+		candidates.insert(std::make_pair(score, device));
+	}
+
+	if (candidates.rbegin()->first > 0) {
+		physicalDevice = candidates.rbegin()->second;
+	} else {
+		throw std::runtime_error("Failed to fine a suitable GPU!");
+	}
+}
+
+int HelloTriangleApplication::rateDeviceSuitability(VkPhysicalDevice device) {
+	VkPhysicalDeviceProperties deviceProperties;
+	vkGetPhysicalDeviceProperties(device, &deviceProperties);
+	VkPhysicalDeviceFeatures deviceFeatures;
+	vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+	
+	int score = 0;
+
+	if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+		score += 1000;
+	}
+
+	score += deviceProperties.limits.maxImageDimension2D;
+
+	// BIG NO NO WE NEED THIS
+	if (!deviceFeatures.geometryShader) {
+		return 0;
+	}
+
+	return score;
+
 }
 
 void HelloTriangleApplication::run() {
@@ -50,6 +99,8 @@ void HelloTriangleApplication::initWindow() {
 
 void HelloTriangleApplication::initVulkan() {
 	createInstance();
+	setupDebugMessenger();
+	pickPhysicalDevice();
 }
 
 std::vector<const char*> HelloTriangleApplication::getRequiredExtensions() {
