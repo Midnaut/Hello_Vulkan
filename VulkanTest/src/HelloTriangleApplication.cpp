@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 
+
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
 	const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
 	const VkAllocationCallbacks* pAllocator,
@@ -76,9 +77,36 @@ int HelloTriangleApplication::rateDeviceSuitability(VkPhysicalDevice device) {
 	if (!deviceFeatures.geometryShader) {
 		return 0;
 	}
+	QueueFamilyIndices indices = findQueueFamilies(device);
+	if (!indices.isComplete()) {
+		return 0;
+	}
 
 	return score;
 
+}
+
+QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(VkPhysicalDevice device) {
+	QueueFamilyIndices indices;
+
+	uint32_t queueFamilyCount = 0;
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+	int i = 0;
+	for (const auto& queueFamily : queueFamilies) {
+		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+			indices.graphicsFamily = i;
+		}
+
+		if (indices.isComplete()) {
+			break;
+		}
+		i++;
+	}
+	
+	return indices;
 }
 
 void HelloTriangleApplication::run() {

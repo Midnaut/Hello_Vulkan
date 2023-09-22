@@ -3,20 +3,37 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <optional>
+
+struct QueueFamilyIndices {
+	std::optional<uint32_t> graphicsFamily;
+	bool isComplete() {
+		return graphicsFamily.has_value();
+	}
+};
 
 class HelloTriangleApplication {
 	public:
 		void run();
 	private:
+		
+
 		void initWindow();
 		void initVulkan();
+		
 		std::vector<const char*> getRequiredExtensions();
 		void createInstance();
+		
 		void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 		void setupDebugMessenger();
+		
 		void pickPhysicalDevice();
 		int rateDeviceSuitability(VkPhysicalDevice device);
+
+		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+
 		bool checkValidationLayerSupport();
+		
 		void mainLoop();
 		void cleanup();
 
@@ -33,6 +50,7 @@ class HelloTriangleApplication {
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		
 
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
@@ -43,4 +61,6 @@ class HelloTriangleApplication {
 		#else
 		const bool enableValidationLayers = true;
 		#endif
+
+		
 };
