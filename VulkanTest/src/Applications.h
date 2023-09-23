@@ -30,6 +30,8 @@ class HelloTriangleApplication {
 		void pickPhysicalDevice();
 		int rateDeviceSuitability(VkPhysicalDevice device);
 
+		void createLogicalDevice();
+
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
 		bool checkValidationLayerSupport();
@@ -50,7 +52,8 @@ class HelloTriangleApplication {
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-		
+		VkDevice device;
+		VkQueue graphicsQueue;
 
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
