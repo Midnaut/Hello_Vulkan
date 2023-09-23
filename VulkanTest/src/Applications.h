@@ -1,5 +1,6 @@
 #pragma once
 
+#define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -7,8 +8,10 @@
 
 struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
+	std::optional<uint32_t> presentFamily;
+
 	bool isComplete() {
-		return graphicsFamily.has_value();
+		return graphicsFamily.has_value() && presentFamily.has_value();
 	}
 };
 
@@ -32,6 +35,8 @@ class HelloTriangleApplication {
 
 		void createLogicalDevice();
 
+		void createSurface();
+
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
 		bool checkValidationLayerSupport();
@@ -44,6 +49,9 @@ class HelloTriangleApplication {
 			VkDebugUtilsMessageTypeFlagsEXT messageType,
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 			void* pUserData);
+
+		VkSurfaceKHR surface;
+		VkQueue presentQueue;
 
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
