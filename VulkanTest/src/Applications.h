@@ -68,6 +68,9 @@ class HelloTriangleApplication {
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
 		VkSwapchainKHR swapChain;
+		std::vector<VkImage> swapChainImages;
+		VkFormat swapChainImageFormat;
+		VkExtent2D swapChainExtent;
 
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
