@@ -44,10 +44,12 @@ class HelloTriangleApplication {
 		void createLogicalDevice();
 
 		void createSurface();
+		
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 		VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		void createSwapChain();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
@@ -65,6 +67,7 @@ class HelloTriangleApplication {
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
+		VkSwapchainKHR swapChain;
 
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
