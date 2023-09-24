@@ -27,11 +27,14 @@ class HelloTriangleApplication {
 	public:
 		void run();
 	private:
-		
-
 		void initWindow();
 		void initVulkan();
+		void mainLoop();
+		void cleanup();
 		
+		bool checkValidationLayerSupport();
+		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+
 		std::vector<const char*> getRequiredExtensions();
 		void createInstance();
 		
@@ -40,9 +43,8 @@ class HelloTriangleApplication {
 		
 		void pickPhysicalDevice();
 		int rateDeviceSuitability(VkPhysicalDevice device);
-
 		void createLogicalDevice();
-
+		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 		void createSurface();
 		
 		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -52,13 +54,8 @@ class HelloTriangleApplication {
 		void createSwapChain();
 		void createImageViews();
 
-		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-		bool checkValidationLayerSupport();
-		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-		
-		void mainLoop();
-		void cleanup();
+		void createGraphicsPipeline();
+		VkShaderModule createShaderModule(const std::vector<char>& code);
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -68,6 +65,7 @@ class HelloTriangleApplication {
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
+		VkPipelineLayout pipelineLayout;
 
 		VkSwapchainKHR swapChain;
 		std::vector<VkImage> swapChainImages;
@@ -98,6 +96,4 @@ class HelloTriangleApplication {
 		#else
 		const bool enableValidationLayers = true;
 		#endif
-
-		
 };
