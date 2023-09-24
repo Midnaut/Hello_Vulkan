@@ -50,6 +50,7 @@ class HelloTriangleApplication {
 		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void createSwapChain();
+		void createImageViews();
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
@@ -67,10 +68,12 @@ class HelloTriangleApplication {
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
+
 		VkSwapchainKHR swapChain;
 		std::vector<VkImage> swapChainImages;
 		VkFormat swapChainImageFormat;
 		VkExtent2D swapChainExtent;
+		std::vector<VkImageView> swapChainImageViews;
 
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
