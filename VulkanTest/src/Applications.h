@@ -53,7 +53,7 @@ class HelloTriangleApplication {
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void createSwapChain();
 		void createImageViews();
-
+		void createRenderPass();
 		void createGraphicsPipeline();
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 
@@ -65,6 +65,7 @@ class HelloTriangleApplication {
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
+		VkRenderPass renderPass;
 		VkPipelineLayout pipelineLayout;
 
 		VkSwapchainKHR swapChain;
