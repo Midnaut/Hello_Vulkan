@@ -67,6 +67,7 @@ class HelloTriangleApplication {
 		VkQueue presentQueue;
 		VkRenderPass renderPass;
 		VkPipelineLayout pipelineLayout;
+		VkPipeline graphicsPipeline;
 
 		VkSwapchainKHR swapChain;
 		std::vector<VkImage> swapChainImages;
