@@ -23,6 +23,8 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 class HelloTriangleApplication {
 	public:
 		void run();
@@ -57,7 +59,7 @@ class HelloTriangleApplication {
 		void createGraphicsPipeline();
 		void createFrameBuffers();
 		void createCommandPool();
-		void createCommandBuffer();
+		void createCommandBuffers();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 		void createSyncObjects();
 
@@ -72,9 +74,11 @@ class HelloTriangleApplication {
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 			void* pUserData);
 
+
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
 		const uint32_t WINDOW_HEIGHT = 600;
+		uint32_t currentFrame = 0;
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
@@ -90,10 +94,10 @@ class HelloTriangleApplication {
 		std::vector<VkFramebuffer> swapChainFrameBuffers;
 
 		VkCommandPool commandPool;
-		VkCommandBuffer commandBuffer;
-		VkSemaphore imageAvailableSemaphore;
-		VkSemaphore renderFinishedSemaphore;
-		VkFence inFlightFence;
+		std::vector<VkCommandBuffer> commandBuffers;
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence> inFlightFences;
 
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
