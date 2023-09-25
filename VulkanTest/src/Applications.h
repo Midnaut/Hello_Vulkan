@@ -56,6 +56,10 @@ class HelloTriangleApplication {
 		void createRenderPass();
 		void createGraphicsPipeline();
 		void createFrameBuffers();
+		void createCommandPool();
+		void createCommandBuffer();
+		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -63,6 +67,10 @@ class HelloTriangleApplication {
 			VkDebugUtilsMessageTypeFlagsEXT messageType,
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 			void* pUserData);
+
+		GLFWwindow* window;
+		const uint32_t WINDOW_WIDTH = 800;
+		const uint32_t WINDOW_HEIGHT = 600;
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
@@ -77,9 +85,8 @@ class HelloTriangleApplication {
 		std::vector<VkImageView> swapChainImageViews;
 		std::vector<VkFramebuffer> swapChainFrameBuffers;
 
-		GLFWwindow* window;
-		const uint32_t WINDOW_WIDTH = 800;
-		const uint32_t WINDOW_HEIGHT = 600;
+		VkCommandPool commandPool;
+		VkCommandBuffer commandBuffer;
 
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
