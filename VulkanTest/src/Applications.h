@@ -55,6 +55,7 @@ class HelloTriangleApplication {
 		void createImageViews();
 		void createRenderPass();
 		void createGraphicsPipeline();
+		void createFrameBuffers();
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -74,6 +75,7 @@ class HelloTriangleApplication {
 		VkFormat swapChainImageFormat;
 		VkExtent2D swapChainExtent;
 		std::vector<VkImageView> swapChainImageViews;
+		std::vector<VkFramebuffer> swapChainFrameBuffers;
 
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
