@@ -54,6 +54,8 @@ class HelloTriangleApplication {
 		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void createSwapChain();
+		void recreateSwapChain();
+		void cleanupSwapChain();
 		void createImageViews();
 		void createRenderPass();
 		void createGraphicsPipeline();
@@ -73,7 +75,7 @@ class HelloTriangleApplication {
 			VkDebugUtilsMessageTypeFlagsEXT messageType,
 			const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 			void* pUserData);
-
+		static void frameBufferResizeCallback(GLFWwindow* window, int width, int height);
 
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
@@ -98,6 +100,8 @@ class HelloTriangleApplication {
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> inFlightFences;
+
+		bool frameBufferResized = false;
 
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
