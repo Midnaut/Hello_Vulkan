@@ -59,6 +59,10 @@ class HelloTriangleApplication {
 		void createCommandPool();
 		void createCommandBuffer();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		void createSyncObjects();
+
+
+		void drawFrame();
 
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 
@@ -87,6 +91,9 @@ class HelloTriangleApplication {
 
 		VkCommandPool commandPool;
 		VkCommandBuffer commandBuffer;
+		VkSemaphore imageAvailableSemaphore;
+		VkSemaphore renderFinishedSemaphore;
+		VkFence inFlightFence;
 
 		VkInstance instance;
 		VkDebugUtilsMessengerEXT debugMessenger;
