@@ -95,6 +95,7 @@ class HelloTriangleApplication {
 		void createFrameBuffers();
 		void createCommandPool();
 		void createVertexBuffer();
+		void createIndexBuffer();
 		void createCommandBuffers();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 		void createSyncObjects();
@@ -147,6 +148,8 @@ class HelloTriangleApplication {
 
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
+		VkBuffer indexBuffer;
+		VkDeviceMemory indexBufferMemory;
 
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
@@ -157,9 +160,14 @@ class HelloTriangleApplication {
 		};
 
 		const std::vector<Vertex> vertices = {
-			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+		};
+
+		const std::vector<uint16_t> indices = {
+			0, 1, 2, 2, 3, 0
 		};
 
 		#ifdef NDEBUG
