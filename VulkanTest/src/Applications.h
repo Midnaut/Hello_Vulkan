@@ -3,9 +3,11 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <cstdint>
 #include <vector>
 #include <optional>
+#include <array>
 
 
 struct QueueFamilyIndices {
@@ -21,6 +23,36 @@ struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
 	std::vector<VkSurfaceFormatKHR> formats;
 	std::vector<VkPresentModeKHR> presentModes;
+};
+
+struct Vertex {
+	glm::vec2 pos;
+	glm::vec3 color;
+
+	static VkVertexInputBindingDescription getBindingDescription() {
+		VkVertexInputBindingDescription bindingDesc{};
+		bindingDesc.binding = 0;
+		bindingDesc.stride = sizeof(Vertex);
+		bindingDesc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		return bindingDesc;
+	};
+
+	static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions() {
+		std::array<VkVertexInputAttributeDescription, 2> attribDesc{};
+
+		attribDesc[0].binding = 0;
+		attribDesc[0].location = 0;
+		attribDesc[0].format = VK_FORMAT_R32G32_SFLOAT;
+		attribDesc[0].offset = offsetof(Vertex, pos);
+
+
+		attribDesc[1].binding = 0;
+		attribDesc[1].location = 1;
+		attribDesc[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attribDesc[1].offset = offsetof(Vertex, color);
+
+		return attribDesc;
+	};
 };
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
@@ -53,6 +85,7 @@ class HelloTriangleApplication {
 		VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		void createSwapChain();
 		void recreateSwapChain();
 		void cleanupSwapChain();
@@ -61,6 +94,7 @@ class HelloTriangleApplication {
 		void createGraphicsPipeline();
 		void createFrameBuffers();
 		void createCommandPool();
+		void createVertexBuffer();
 		void createCommandBuffers();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 		void createSyncObjects();
@@ -69,6 +103,8 @@ class HelloTriangleApplication {
 		void drawFrame();
 
 		VkShaderModule createShaderModule(const std::vector<char>& code);
+		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+		
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 			VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -109,12 +145,21 @@ class HelloTriangleApplication {
 		VkDevice device;
 		VkQueue graphicsQueue;
 
+		VkBuffer vertexBuffer;
+		VkDeviceMemory vertexBufferMemory;
+
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
 		};
 
 		const std::vector<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
+
+		const std::vector<Vertex> vertices = {
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 		};
 
 		#ifdef NDEBUG
