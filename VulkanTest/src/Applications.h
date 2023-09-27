@@ -55,6 +55,13 @@ struct Vertex {
 	};
 };
 
+
+struct UniformBufferObject {
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 proj;
+};
+
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 class HelloTriangleApplication {
@@ -91,11 +98,16 @@ class HelloTriangleApplication {
 		void cleanupSwapChain();
 		void createImageViews();
 		void createRenderPass();
+		void createDescriptorSetLayout();
 		void createGraphicsPipeline();
 		void createFrameBuffers();
 		void createCommandPool();
 		void createVertexBuffer();
 		void createIndexBuffer();
+		void createUniformBuffers();
+		void updateUniformBuffer(uint32_t currentImage);
+		void createDescriptorPool();
+		void createDescriptorSets();
 		void createCommandBuffers();
 		void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 		void createSyncObjects();
@@ -118,6 +130,9 @@ class HelloTriangleApplication {
 		const uint32_t WINDOW_WIDTH = 800;
 		const uint32_t WINDOW_HEIGHT = 600;
 		uint32_t currentFrame = 0;
+
+
+
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
@@ -150,6 +165,14 @@ class HelloTriangleApplication {
 		VkDeviceMemory vertexBufferMemory;
 		VkBuffer indexBuffer;
 		VkDeviceMemory indexBufferMemory;
+
+		std::vector<VkBuffer> uniformBuffers;
+		std::vector<VkDeviceMemory> uniformBuffersMemory;
+		std::vector<void*> uniformBuffersMapped;
+
+		VkDescriptorPool descriptorPool;
+		std::vector<VkDescriptorSet> descriptorSets;
+		VkDescriptorSetLayout descriptorSetLayout;
 
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
