@@ -28,6 +28,7 @@ struct SwapChainSupportDetails {
 struct Vertex {
 	glm::vec2 pos;
 	glm::vec3 color;
+	glm::vec2 texCoord;
 
 	static VkVertexInputBindingDescription getBindingDescription() {
 		VkVertexInputBindingDescription bindingDesc{};
@@ -37,8 +38,8 @@ struct Vertex {
 		return bindingDesc;
 	};
 
-	static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions() {
-		std::array<VkVertexInputAttributeDescription, 2> attribDesc{};
+	static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions() {
+		std::array<VkVertexInputAttributeDescription, 3> attribDesc{};
 
 		attribDesc[0].binding = 0;
 		attribDesc[0].location = 0;
@@ -51,10 +52,14 @@ struct Vertex {
 		attribDesc[1].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attribDesc[1].offset = offsetof(Vertex, color);
 
+		attribDesc[2].binding = 0;
+		attribDesc[2].location = 2;
+		attribDesc[2].format = VK_FORMAT_R32G32_SFLOAT;
+		attribDesc[2].offset = offsetof(Vertex, texCoord);
+
 		return attribDesc;
 	};
 };
-
 
 struct UniformBufferObject {
 	glm::mat4 model;
@@ -103,6 +108,8 @@ class HelloTriangleApplication {
 		void createFrameBuffers();
 		void createCommandPool();
 		void createTextureImage();
+		void createTextureImageView();
+		void createTextureSampler();
 		void createVertexBuffer();
 		void createIndexBuffer();
 		void createUniformBuffers();
@@ -118,6 +125,7 @@ class HelloTriangleApplication {
 
 
 		void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+		VkImageView createImageView(VkImage image, VkFormat format);
 		VkShaderModule createShaderModule(const std::vector<char>& code);
 		void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -175,6 +183,8 @@ class HelloTriangleApplication {
 
 		VkImage textureImage;
 		VkDeviceMemory textureImageMemory;
+		VkImageView textureImageView;
+		VkSampler textureSampler;
 
 		std::vector<VkBuffer> uniformBuffers;
 		std::vector<VkDeviceMemory> uniformBuffersMemory;
@@ -193,10 +203,10 @@ class HelloTriangleApplication {
 		};
 
 		const std::vector<Vertex> vertices = {
-			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-			{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+			{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
 		};
 
 		const std::vector<uint16_t> indices = {
