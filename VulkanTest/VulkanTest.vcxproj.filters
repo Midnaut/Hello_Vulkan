@@ -29,5 +29,8 @@
     <ClInclude Include="src\io\ReadFiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\libs\TinyObjLoader\tiny_obj_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

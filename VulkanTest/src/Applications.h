@@ -7,11 +7,15 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
+
 #include <cstdint>
 #include <vector>
 #include <optional>
 #include <array>
-
+#include <string>
 
 struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
@@ -62,7 +66,21 @@ struct Vertex {
 
 		return attribDesc;
 	};
+
+	bool operator==(const Vertex& other) const {
+		return pos == other.pos && color == other.color && texCoord == other.texCoord;
+	}
 };
+
+namespace std {
+	template<> struct hash<Vertex> {
+		size_t operator()(Vertex const& vertex) const {
+			return ((hash<glm::vec3>()(vertex.pos) ^
+					(hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^
+					(hash<glm::vec2>()(vertex.texCoord) << 1);
+		}
+	};
+}
 
 struct UniformBufferObject {
 	glm::mat4 model;
@@ -114,6 +132,7 @@ class HelloTriangleApplication {
 		void createTextureImage();
 		void createTextureImageView();
 		void createTextureSampler();
+		void loadModel();
 		void createVertexBuffer();
 		void createIndexBuffer();
 		void createUniformBuffers();
@@ -151,10 +170,11 @@ class HelloTriangleApplication {
 		GLFWwindow* window;
 		const uint32_t WINDOW_WIDTH = 800;
 		const uint32_t WINDOW_HEIGHT = 600;
+
+		const std::string MODEL_PATH = "assets/models/viking_room.obj";
+		const std::string TEXTURE_PATH = "assets/textures/viking_room.png";
+
 		uint32_t currentFrame = 0;
-
-
-
 
 		VkSurfaceKHR surface;
 		VkQueue presentQueue;
@@ -213,22 +233,8 @@ class HelloTriangleApplication {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 
-		const std::vector<Vertex> vertices = {
-			{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-			{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-			{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-			{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-
-			{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-			{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-			{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-			{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
-		};
-
-		const std::vector<uint16_t> indices = {
-			0, 1, 2, 2, 3, 0,
-			4, 5, 6, 6, 7, 4
-		};
+		std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;
 
 		#ifdef NDEBUG
 		const bool enableValidationLayers = false;
