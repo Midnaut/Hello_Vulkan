@@ -5,7 +5,7 @@
 #include <cstdlib>
 
 int main() {
-	HelloTriangleApplication app;
+	HelloVulkan app;
 
 	try {
 		app.run();

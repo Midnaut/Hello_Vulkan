@@ -90,7 +90,7 @@ struct UniformBufferObject {
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
-class HelloTriangleApplication {
+class HelloVulkan {
 	public:
 		void run();
 	private:
